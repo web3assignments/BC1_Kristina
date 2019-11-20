@@ -20,7 +20,9 @@ contract SchrodingersCat {
     mapping(address => Box) public boxes;
 
     /**
-    * Create a box that is mapped to the sender address. Initially the box is closed and the cat is in the superposition.
+    * Create a box that is mapped to the sender address.
+    * Initially the box is closed and the cat is in the superposition.
+    * Only one box per sender address is possible.
     */
     function createBox() public {
         boxes[msg.sender] = Box(CatState.Superposition, BoxState.Closed);
@@ -34,7 +36,6 @@ contract SchrodingersCat {
         uint fee = msg.value;
         require(fee > 0, "Value must be higher than 0.");
         Box memory myBox = boxes[msg.sender];
-        // what happens if map doesn't contain this key?
         myBox.box_state = BoxState.Open;
         if(getRandom()) {
             myBox.cat_state = CatState.Alive;
