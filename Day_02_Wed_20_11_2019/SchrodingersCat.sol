@@ -31,7 +31,7 @@ contract SchrodingersCat {
     */
     function openBox () public boxIsClosed {
         myBox.box_state = BoxState.Open;
-        getRandom() ? myBox.cat_state = CatState.Alive : myBox.cat_state = CatState.Dead;
+        myBox.cat_state = (getRandom() ? CatState.Alive : CatState.Dead);
     }
 
     /**
