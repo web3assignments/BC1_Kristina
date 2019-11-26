@@ -1,0 +1,42 @@
+<body>
+    <script>
+        myTimer(); // execute first time
+        var myVar = setInterval(myTimer, 10000); // every 10 sec
+
+        async function myTimer() {
+            const request=JSON.stringify(
+                {
+                    "id": 1,
+                    "method": "eth_getBlockTransactionCountByNumber",
+                    "params": ["latest"]
+                }
+            );
+            const rawResponse = await fetch('https://mainnet.infura.io', {
+                method: 'POST',
+                headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+                },
+                body: request
+            });
+            const content = await rawResponse.json();
+            // var data=JSON.parse(content);
+            log(`${parseInt(content.result)}`);
+        }
+    
+        function log(num) {
+            document.getElementById("log").innerHTML = num;
+        }
+        
+    </script>
+
+    <h3>Number of transactions in the latest block</h3>
+    <p>This webpage allows to track the number of transactions <br/>
+    in the latest Ethereum block. The number is displayed <br/>
+    below and being updated every 10 seconds.</p>
+    <br/>
+    <h3 id="log"></h3>
+    <br/>
+    <p>Compare to <a href="https://etherscan.io/blocks" target="_blank">Etherscan</a></p>
+
+</body>
