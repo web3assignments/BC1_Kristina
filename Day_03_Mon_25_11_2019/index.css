@@ -1,0 +1,16 @@
+body{
+    background-color: #007bff !important;
+}
+.card-body{
+    width:90%;
+    margin: auto;
+}
+
+.card{
+    width:50%;
+    margin: auto;
+}
+
+.table{
+    width:15%;
+}
