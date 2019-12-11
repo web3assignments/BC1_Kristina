@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<body>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" 
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" 
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" 
+        crossorigin="anonymous">
+
+    <script>
+        import Web3 from "web3";
+
+        web3 = new Web3('https://mainnet.infura.io');
+        const TestPlayAddress = "0x4029d3AB3867a314C390FAaeffA45D69cf3f12Fb";
+
+        const abi=[
+        {
+            "constant": false,
+            "inputs": [],
+            "name": "createBox",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+            ],
+            "name": "boxes",
+            "outputs": [
+            {
+                "internalType": "enum SchrodingersCat.CatState",
+                "name": "cat_state",
+                "type": "uint8"
+            },
+            {
+                "internalType": "enum SchrodingersCat.BoxState",
+                "name": "box_state",
+                "type": "uint8"
+            }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "catIsAlive",
+            "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [],
+            "name": "openBox",
+            "outputs": [],
+            "payable": true,
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+            {
+                "indexed": false,
+                "internalType": "bool",
+                "name": "is_alive",
+                "type": "bool"
+            }
+            ],
+            "name": "Observed",
+            "type": "event"
+        }
+        ]
+        create();
+        async function create(){
+            const SchrodingersCat = new web3.eth.Contract(abi, TestPlayAddress);
+            var result = await SchrodingersCat.methods.createBox().call();
+            //shouldn't return anything
+            // console.log(`Create: ${result.json}`);
+            log(result.json)
+        }
+        function log(msg) {
+            document.getElementById("test").innerHTML = msg;
+        }
+    </script>
+
+    <div style="max-width:400px;margin: auto;max-height: 500px;" class="card" style="width: 45%;margin:auto;">
+        <img style="max-height: 100%;max-width: 100%;" class="card-img-top" src="./sources/closed.jpg" alt="Card image cap">
+        <div class="card-body">
+            <h5 id="test" class="card-title">Card title</h5>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <a href="#" class="btn btn-primary">Open the box</a>
+        </div>
+    </div>
+
+</body>
