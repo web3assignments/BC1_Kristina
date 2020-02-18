@@ -10,19 +10,36 @@
         crossorigin="anonymous">
 
     <script>
+        url = 'https://mainnet.infura.io/v3/bb136bc2d97342adaaf1c5872a2334ed'
         makeRequests(); // execute first time
-        var myVar = setInterval(makeRequests, 10000); // every 10 sec
+        // var myVar = setInterval(makeRequests, 10000); // every 10 sec
+        var blockNr = 0;
 
         async function makeRequests() {
-            blockNr = requestBlockNr();
-            requestNrTransactions(blockNr);
+            putOnScreen("blockNr", await requestBlockNr());
+            putOnScreen("tranNr", await requestNrTransactions(blockNr));
+            var block = await getBlockByNumber();
+            putOnScreen("difficulty", block.result.difficulty);
+            putOnScreen("totalDifficulty", block.result.totalDifficulty);
+
+            putOnScreen("gasLimit", block.result.gasLimit);
+            putOnScreen("gasUsed", block.result.gasUsed);
+
+            putOnScreen("miner", block.result.miner);
+            putOnScreen("nonce", block.result.nonce);
+            putOnScreen("size", block.result.size);
+            putOnScreen("timestamp", block.result.timestamp);
+
+            putOnScreen("hash", block.result.hash);
+            putOnScreen("parentHash", block.result.parentHash);
+            putOnScreen("transactionsRoot", block.result.transactionsRoot);
         }
 
         async function requestBlockNr(){
             const request=JSON.stringify(
                 {"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":67}
             );
-            const rawResponse = await fetch('https://mainnet.infura.io', {
+            const rawResponse = await fetch(url, {
                 method: 'POST',
                 headers: {
                 'Accept': 'application/json',
@@ -31,11 +48,7 @@
                 body: request
             });
             const content = await rawResponse.json();
-            logNr(`${parseInt(content.result)}`);
-        }
-
-        function logNr(num) {
-            document.getElementById("logNr").innerHTML = num;
+            return parseInt(content.result)
         }
 
         async function requestNrTransactions(){
@@ -46,7 +59,7 @@
                     "params": ["latest"]
                 }
             );
-            const rawResponse = await fetch('https://mainnet.infura.io', {
+            const rawResponse = await fetch(url, {
                 method: 'POST',
                 headers: {
                 'Accept': 'application/json',
@@ -55,11 +68,31 @@
                 body: request
             });
             const content = await rawResponse.json();
-            logTran(`${parseInt(content.result)}`);
+            return parseInt(content.result);
         }
     
-        function logTran(num) {
-            document.getElementById("logTran").innerHTML = num;
+        async function getBlockByNumber(){
+            const request=JSON.stringify(
+                {
+                    "id": 1,
+                    "method": "eth_getBlockByNumber",
+                    "params": ["latest" , true]
+                }
+            );
+            const rawResponse = await fetch(url, {
+                method: 'POST',
+                headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+                },
+                body: request
+            });
+            const content = rawResponse.json();
+            return content;
+        }
+
+        function putOnScreen(rowId, value) {
+            document.getElementById(rowId).innerHTML = `${value}`;
         }
         
     </script>
@@ -79,11 +112,58 @@
                 <tbody>
                         <tr>
                             <th scope="row">Block Nr.</th>
-                            <td id="logNr"></td>
+                            <td id="blockNr"></td>
                         </tr>
                         <tr>
                             <th scope="row">Transactions Nr.</th>
-                            <td id="logTran"></td>
+                            <td id="tranNr"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Difficulty</th>
+                            <td id="difficulty"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Total Difficulty</th>
+                            <td id="totalDifficulty"></td>
+                        </tr>
+                        <br/>
+                        <tr>
+                            <th scope="row">Gas Limit</th>
+                            <td id="gasLimit"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Gas Used</th>
+                            <td id="gasUsed"></td>
+                        </tr>
+                        <br/>
+                        <tr>
+                            <th scope="row">Miner</th>
+                            <td id="miner"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Nonce</th>
+                            <td id="nonce"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Size</th>
+                            <td id="size"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Timestamp</th>
+                            <td id="timestamp"></td>
+                        </tr>
+                        <br/>
+                        <tr>
+                            <th scope="row">Hash</th>
+                            <td id="hash"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Parent Hash</th>
+                            <td id="parentHash"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Transactions Root</th>
+                            <td id="transactionsRoot"></td>
                         </tr>
                 </tbody>
             </table>
