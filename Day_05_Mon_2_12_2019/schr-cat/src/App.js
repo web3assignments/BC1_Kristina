@@ -5,36 +5,41 @@ import Web3 from "web3";
 import abi from './abi.json';
 
 function App() {
-  var web3 = new Web3('https://mainnet.infura.io');
   const [boxId, setBoxId] = useState("");
   const [SchrodingersCat, setSchrodingersCat] = useState();
   const [account0, setAccount0] = useState();
   const [image, setImage] = useState("./closed.jpg");
-
-  web3 = new Web3(window.ethereum);
+  
+  var web3 = new Web3(window.ethereum);
   const imgs =  new Map();
+
   imgs.set(0, "./closed.jpg");
   imgs.set(1, "./full.jpg")
   imgs.set(2, "./empty.jpg")
 
 
   useEffect(() => {
-    smth();
+    run();
   }, []);
   
-  async function smth() {
+
+  async function getAccs(){
+    web3.eth.getAccounts().then(function(result){
+        account0 = result[0];
+    })
+  }
+
+  async function run() {
     await window.ethereum.enable();
     setSchrodingersCat(new web3.eth.Contract(abi, "0x69ad5b63d0Bb0A9f5C28E57a6Db9B7Dd6c509b2E"));
-    const currentAddress = await web3.eth.getAccounts();
-    setAccount0(currentAddress[0]);
-    console.log(`Acc: ${account0}`);
+    setAccount0("0x4F0Bd406c78426e3beaF933B068f45606B29E286");
   }
 
   async function create(){
     var box = await SchrodingersCat.methods
       .createBox()
       .send({from: account0, gas: 3000000, value: 0});
-    var boxId =   box.events.Created.returnValues.id;
+    var boxId = box.events.Created.returnValues.id;
     console.log(boxId)
     setBoxId(boxId);
   }
@@ -47,7 +52,8 @@ function App() {
           .send({'from': account0, 'gas': 3000000, 'value': 10});
     const alive = opened.events.Observed.returnValues.is_alive;
     console.log(alive);
-    setImage(imgs.get(alive ? 1: 2))
+    setImage(imgs.get(alive ? 1: 2));
+    console.log(`Acc: ${account0}`);
   }
 
   function reload(){
