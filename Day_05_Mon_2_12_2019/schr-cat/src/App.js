@@ -21,13 +21,6 @@ function App() {
   useEffect(() => {
     run();
   }, []);
-  
-
-  async function getAccs(){
-    web3.eth.getAccounts().then(function(result){
-        account0 = result[0];
-    })
-  }
 
   async function run() {
     await window.ethereum.enable();
